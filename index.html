@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<style>
+  body {
+    position: relative;
+  }
+  .time-selector {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 280px;
+    height: 235px;
+    border: 1px solid #eee;
+    background-color: #fff;
+    box-shadow: 0 2px 12px rgba(0,0,0,.4);
+  }
+  .time-selector .progress-container{
+    position: relative;
+    padding: 30px 50px 20px 50px;
+    width: 180px;
+    border-bottom: 1px solid #ddd;
+  }
+  .time-selector .progress-container .progress-line {
+    display: inline-block;
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background-color: #e6e6e6;
+    overflow: visible;
+    position: relative;
+  }
+  .time-selector .progress-container .progress-line .progress-point{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 12px;
+    height: 24px;
+    background-color: #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  .time-selector .progress-container .progress-line .progress-point .progress-score{
+    position: absolute;
+    top: -20px;
+    left: 0px;
+    background-color: pink;
+    border-radius: 3px;
+  }
+</style>
+<body>
+<input type="text" class="time-selector-field">
+  <div class="time-selector-container">
+</body>
+<script src="bower_components/jquery/dist/jquery.min.js"></script>
+<script>
+  (function($){
+    var TimeSelector = function(opts){
+      this.init(opts);
+    };
+
+    var fn = TimeSelector.prototype;
+
+    fn.init = function(opts) {
+      var defaultOpts = {
+          html: '<div class="time-selector">' +
+                  '<div class="progress-name">时</div>' +
+                  '<div class="progress-container">' +
+                    '<div class="progress-line">' +
+                      '<div class="progress-point">' +
+                        '<div class="progress-score"></div>' +
+                      '</div>' +
+                    '</div>' +
+                  '</div>' +
+                  '<div class="progress-name">分</div>' +
+                  '<div class="progress-container">' +
+                    '<div class="progress-line">' +
+                      '<div class="progress-point">' +
+                        '<div class="progress-score"></div>' +
+                      '</div>' +
+                  '</div>' +
+                '</div>'
+      };
+      var self = this;
+      var optstemp = $.extend(true,{}, defaultOpts);
+      self.opts = $.extend(true,optstemp, opts);
+      self.Ele = $(self.opts.html);
+      if (self.opts.container) {
+        $(self.opts.container).html('');
+        $(self.opts.container).append(self.Ele);
+      } else {
+        $('body').append(self.Ele);
+      }
+      self.setPosition();
+      self.bindAction();
+    };
+
+    fn.setPosition = function() {
+      var self = this;
+      var points = self.Ele.find('.progress-point');
+      points.map(function(index,item){
+        item = $(item);
+        var pH = item.parent().height();
+        var top = Math.abs(( pH - item.height() )/2);
+        item.css({
+          top: '-' + top + 'px'
+        });
+      });
+    };
+
+    fn.bindAction = function() {
+      var self   = this;
+      var mouseDownX;
+      var mouseMoveX;
+      var itemPresentX;
+      var lineOffsetX;
+      var maxWidth;
+      var containers  = self.Ele.find('.progress-container');
+      containers.map(function(index,item){
+        item = $(item);
+        item.on('mousedown', function(e) {
+          e.preventDefault();
+          var target = $(e.target);
+          maxWidth = item.find('.progress-line').width();
+          mouseDownX = e.pageX;
+          lineOffsetX = $(this).find('.progress-line').offset().left;
+          if (target.hasClass('progress-line')){
+            $(this).find('.progress-point').css({
+              left: ( mouseDownX - lineOffsetX ) + 'px'
+            });
+          }
+          itemPresentX = $(this).find('.progress-point').position().left;
+            $(this).on('mousemove',mousemove);
+            $(this).on('mouseup',mouseup);
+            $(this).on('mouseleave',mouseleave);
+            //onchage
+        });
+      });
+
+      function mousemove(e) {
+        e.preventDefault();
+        mouseMoveX = e.pageX;
+        var point = $(this).find('.progress-point');
+        var rightX =  itemPresentX + (mouseMoveX - mouseDownX);
+        var maxWidthLeft = maxWidth - point.width()/2;
+        if (rightX < 0) {
+          rightX = 0;
+        } else if (rightX > maxWidthLeft) {
+          rightX = maxWidthLeft;
+        }
+        point.css({
+          left: rightX + 'px'
+        });
+        updatescore(point, rightX, maxWidthLeft);
+      }
+
+      function mouseup() {
+        $(this).off('mousemove',mousemove);
+        $(this).off('mouseup',mouseup);
+      }
+
+      function mouseleave(e) {
+        var minX = $(this).parent().offset().left ;
+        var maxX = $(this).parent().offset().left + $(this).parent().width() ;
+
+        if (true) {
+          $(this).off('mousemove',mousemove);
+        }
+      }
+
+      function updatescore(point, presentX, C){
+        point.find('.progress-score').text(presentX)
+      }
+
+    };
+
+    $.TimeSelector = TimeSelector;
+  })($);
+</script>
+<script>
+  var a = new $.TimeSelector({
+    field: document.getElementsByClassName('time-selector-field')[0],
+    container: document.getElementsByClassName('time-selector-container')[0]
+  });
+</script>
+</html>
