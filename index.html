@@ -5,55 +5,165 @@
   <title>Document</title>
 </head>
 <style>
-  body {
+  body,html {
     position: relative;
+    height: 100%;
+    width: 100%;
+  }
+  .test {
+    margin-top: 100px;
+    margin-left: 200px;
   }
   .time-selector {
+    display: inline-block;
+    overflow: visible;
+    position: relative;
+  }
+  .time-selector-container {
     position: absolute;
     top: 20px;
     left: 20px;
-    width: 280px;
-    height: 235px;
+    width: 278px;
+    height: 232px;
     border: 1px solid #eee;
     background-color: #fff;
     box-shadow: 0 2px 12px rgba(0,0,0,.4);
   }
-  .time-selector .progress-container{
+  .time-selector-container .progress-name {
+    display: inline-block;
+    margin-right: 20px;
+    vertical-align: middle;
+    padding-top: 3px;
+  }
+  .time-selector-container .progress-container{
     position: relative;
-    padding: 30px 50px 20px 50px;
-    width: 180px;
+    padding: 50px 20px 20px 20px;
     border-bottom: 1px solid #ddd;
   }
-  .time-selector .progress-container .progress-line {
+  .time-selector-container .progress-container-submit{
+    position: relative;
+    padding: 12px 20px 11px 0;
+    overflow: hidden;
+  }
+  .time-selector-container .progress-container-submit .pull-right{
+    float: right;
+  }
+  .time-selector-container .progress-container .progress-line {
     display: inline-block;
-    width: 100%;
+    width: 180px;
     height: 6px;
     border-radius: 3px;
     background-color: #e6e6e6;
     overflow: visible;
     position: relative;
   }
-  .time-selector .progress-container .progress-line .progress-point{
+  .time-selector-container .progress-container .progress-line .progress-point{
     position: absolute;
     top: 0px;
     left: 0px;
     width: 12px;
     height: 24px;
-    background-color: #ccc;
+    background-color: #427fed;
     border-radius: 3px;
     cursor: pointer;
   }
-  .time-selector .progress-container .progress-line .progress-point .progress-score{
-    position: absolute;
-    top: -20px;
-    left: 0px;
-    background-color: pink;
-    border-radius: 3px;
+  .time-selector-container .progress-container .progress-line .progress-point .progress-score{
+
   }
+  .time-selector-container.hidden {
+    display: none;
+  }
+  .tooltip {
+    position: absolute;
+    top: -30px;
+    left: 0px;
+    z-index: 1000;
+    display: block;
+    visibility: visible;
+    font-size: 14px;
+    line-height: 1.4;
+    opacity: 0.9; }
+    .tooltip:in {
+    opacity: 0.9; }
+    .tooltip.top {
+    margin-top: -3px;
+    padding: 5px 0; }
+    .tooltip.right {
+    margin-left: 3px;
+    padding: 0 5px; }
+    .tooltip.bottom {
+    margin-top: 3px;
+    padding: 5px 0; }
+    .tooltip.left {
+    margin-left: -3px;
+    padding: 0 5px; }
+    .tooltip-inner {
+    max-width: 200px;
+    padding: 3px 8px;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-radius: 2px; }
+    .tooltip-arrow {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid; }
+    .tooltip.top .tooltip-arrow {
+    bottom: 0;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px 5px 0;
+    border-top-color: rgba(0, 0, 0, 0.8); }
+    .btn,
+.pagination a
+{
+    /* Typography */
+    font-size: 14px;
+    line-height: 1.2;
+    /* Position */
+    /* Box-model */
+
+    display: inline-block;
+
+    margin-right: 10px;
+    padding: 6px 20px;
+    /* Others */
+
+    cursor: pointer;
+    transition-duration: .2s;
+    transition-property: background, color;
+    text-align: center;
+    vertical-align: middle;
+    text-decoration: none;
+
+    border: 1px solid transparent;
+    /* Visual */
+    border-radius: 2px;
+}
+.btn:focus,
+{
+    outline: none;
+}
+.btn-primary{
+    color: #fff;
+    border-color: #427fed;
+    background-color: #427fed;
+}
+.btn-primary:hover{
+    background-color: #3668c2;
+}
+
+
 </style>
 <body>
-<input type="text" class="time-selector-field">
-  <div class="time-selector-container">
+
+  <div class="time-selector test">
+  </div>
+  <div class="time-selector test">
+  </div>
 </body>
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
 <script>
@@ -66,36 +176,62 @@
 
     fn.init = function(opts) {
       var defaultOpts = {
-          html: '<div class="time-selector">' +
-                  '<div class="progress-name">时</div>' +
+
+          html: '<div class="time-selector-container">' +
                   '<div class="progress-container">' +
+                    '<div class="progress-name">小时</div>' +
                     '<div class="progress-line">' +
-                      '<div class="progress-point">' +
-                        '<div class="progress-score"></div>' +
+                      '<div class="progress-point hour">' +
+                        '<div class="tooltip top" role="tooltip">' +
+                            '<div class="tooltip-arrow"></div>' +
+                            '<div class="tooltip-inner progress-score">0</div>' +
+                        '</div>' +
                       '</div>' +
                     '</div>' +
                   '</div>' +
-                  '<div class="progress-name">分</div>' +
                   '<div class="progress-container">' +
+                    '<div class="progress-name">分钟</div>' +
                     '<div class="progress-line">' +
-                      '<div class="progress-point">' +
-                        '<div class="progress-score"></div>' +
+                      '<div class="progress-point minute">' +
+                        '<div class="tooltip top" role="tooltip">' +
+                            '<div class="tooltip-arrow"></div>' +
+                            '<div class="tooltip-inner progress-score">0</div>' +
+                        '</div>' +
                       '</div>' +
+                    '</div>' +
                   '</div>' +
-                '</div>'
+                  '<div class="progress-container-submit">' +
+                    '<a class="btn btn-primary pull-right progress-submit" href="javascript:void(0)">确定</a>' +
+                  '</div>' +
+                '</div>',
+          htmlinput: '<input type="text" class="time-selector-field">',
+          show: false,
+          maxH: 23,
+          maxM: 59,
+          toolTipTop: 39
       };
-      var self = this;
-      var optstemp = $.extend(true,{}, defaultOpts);
-      self.opts = $.extend(true,optstemp, opts);
-      self.Ele = $(self.opts.html);
-      if (self.opts.container) {
-        $(self.opts.container).html('');
-        $(self.opts.container).append(self.Ele);
-      } else {
-        $('body').append(self.Ele);
-      }
+      var self       = this;
+      var optstemp   = $.extend(true,{}, defaultOpts);
+      self.opts      = $.extend(true,optstemp, opts);
+      self.Ele       = $(self.opts.html);
+      self.ElePointH = self.Ele.find('.hour');
+      self.ElePointM = self.Ele.find('.minute');
+      self.EleSubmit = self.Ele.find('.progress-submit');
+      self.EleInput  = $(self.opts.htmlinput);
+      self.opts.div.append(self.EleInput);
+      self.opts.div.find('.time-selector-container').remove();
+      self.opts.div.append(self.Ele);
       self.setPosition();
-      self.bindAction();
+      self.ElePointHLineWdith = self.ElePointH.parent().width();
+      self.ElePointMLineWdith = self.ElePointM.parent().width();
+      self.bindActionEle();
+      self.bindActionCommon();
+
+      if (self.opts.show) {
+        self.Ele.removeClass('hidden');
+      } else {
+        self.Ele.addClass('hidden');
+      }
     };
 
     fn.setPosition = function() {
@@ -104,48 +240,69 @@
       points.map(function(index,item){
         item = $(item);
         var pH = item.parent().height();
-        var top = Math.abs(( pH - item.height() )/2);
+        var top = Math.abs(( pH - item.height() ) / 2);
         item.css({
           top: '-' + top + 'px'
         });
+        self.setToolTipPos(item);
+      });
+      var h = self.opts.div.height();
+      self.Ele.css({
+        left: '0px',
+        top: h + 'px'
       });
     };
 
-    fn.bindAction = function() {
+    fn.setToolTipPos = function(point) {
+      var self = this;
+      var tool = point.find('.tooltip');
+      var toolLeft = (tool.width() - point.width()) / 2;
+      tool.css({
+        left: '-' + toolLeft + 'px',
+        top:  '-' + self.opts.toolTipTop + 'px'
+      });
+    };
+
+    fn.bindActionEle = function() {
       var self   = this;
       var mouseDownX;
       var mouseMoveX;
       var itemPresentX;
       var lineOffsetX;
       var maxWidth;
+      var maxWidthLeft;
       var containers  = self.Ele.find('.progress-container');
+      // bind container
       containers.map(function(index,item){
         item = $(item);
         item.on('mousedown', function(e) {
           e.preventDefault();
           var target = $(e.target);
-          maxWidth = item.find('.progress-line').width();
+          var EleLine = item.find('.progress-line');
+          var ElePoint = item.find('.progress-point');
+          maxWidth = EleLine.width();
           mouseDownX = e.pageX;
-          lineOffsetX = $(this).find('.progress-line').offset().left;
+          maxWidthLeft = maxWidth - ElePoint.width()/2;
+          lineOffsetX = EleLine.offset().left;
           if (target.hasClass('progress-line')){
-            $(this).find('.progress-point').css({
+            ElePoint.css({
               left: ( mouseDownX - lineOffsetX ) + 'px'
             });
+            self.updatescore(ElePoint);
           }
-          itemPresentX = $(this).find('.progress-point').position().left;
-            $(this).on('mousemove',mousemove);
-            $(this).on('mouseup',mouseup);
-            $(this).on('mouseleave',mouseleave);
-            //onchage
+          itemPresentX = ElePoint.position().left;
+          $(this).on('mousemove',mousemove);
+          $(this).on('mouseup',mouseup);
+          $(this).on('mouseleave',mouseleave);
         });
       });
 
       function mousemove(e) {
         e.preventDefault();
+        e.stopPropagation();
         mouseMoveX = e.pageX;
         var point = $(this).find('.progress-point');
         var rightX =  itemPresentX + (mouseMoveX - mouseDownX);
-        var maxWidthLeft = maxWidth - point.width()/2;
         if (rightX < 0) {
           rightX = 0;
         } else if (rightX > maxWidthLeft) {
@@ -154,7 +311,7 @@
         point.css({
           left: rightX + 'px'
         });
-        updatescore(point, rightX, maxWidthLeft);
+        self.updatescore(point);
       }
 
       function mouseup() {
@@ -163,6 +320,7 @@
       }
 
       function mouseleave(e) {
+        e.stopPropagation();
         var minX = $(this).parent().offset().left ;
         var maxX = $(this).parent().offset().left + $(this).parent().width() ;
 
@@ -171,19 +329,140 @@
         }
       }
 
-      function updatescore(point, presentX, C){
-        point.find('.progress-score').text(presentX)
+    };
+
+    fn.bindActionCommon = function() {
+      var self = this;
+      // self.EleInput.on('input', function() {
+      //   self.updatePointFromInput();
+      // });
+      self.EleInput.on('focus',function(e) {
+        e.stopPropagation();
+        self.show();
+      });
+      self.Ele.find('.progress-score').on('DOMNodeInserted',function(){
+        self.setToolTipPos($(this).parent().parent());
+      });
+      self.EleSubmit.on('click',function(e) {
+        e.preventDefault();
+        self.hide();
+      });
+      $('body').on('click', function(e) {
+        var target = e.target;
+        do{
+          if (target == self.opts.div.get(0)){
+            return;
+          }
+          target = target.parentNode;
+        } while (target.parentNode);
+        self.hide();
+      });
+    };
+
+    fn.show = function() {
+      var self = this;
+      self.updatePointFromInput();
+      if (self.Ele.hasClass('hidden')) {
+        self.Ele.removeClass('hidden');
       }
+    };
+
+    fn.hide = function() {
+      var self = this;
+          self.Ele.addClass('hidden');
+    };
+
+    fn.updatescore = function(point) {
+      var self = this;
+      var presentX = point.position().left;
+      var C = point.parent().width() - point.width()/2;
+      var percent = C / presentX;
+      var value;
+      if (point.hasClass('hour')) {
+        value = Math.round( self.opts.maxH / percent);
+      }
+      if (point.hasClass('minute')) {
+        value = Math.round( self.opts.maxM / percent);
+      }
+      point.find('.progress-score').text(value);
+      self.updateInputFromPoint();
+    };
+
+
+    fn.updatePointFromInput = function() {
+      var self = this;
+      self.checkInputValue();
+      var v = self.EleInput.val();
+      v = v.split(':');
+      if (v.length != 2) {
+        return;
+      }
+      var h = parseInt(v[0] || 0);
+      var m = parseInt(v[1] || 0);
+      //h
+      var hWidth;
+      var hLeft;
+        hWidth = self.ElePointHLineWdith - self.ElePointH.width()/2;
+        hLeft = ( hWidth * h) / self.opts.maxH;
+        self.ElePointH.css({
+          left: hLeft + 'px'
+        });
+        self.ElePointH.find('.progress-score').text(h);
+
+      //m
+      var mWidth;
+      var mLeft;
+        mWidth = self.ElePointMLineWdith - self.ElePointM.width()/2;
+        mLeft = ( mWidth * m) / self.opts.maxM;
+        self.ElePointM.css({
+          left: mLeft + 'px'
+        });
+        self.ElePointM.find('.progress-score').text(m);
 
     };
 
+    fn.checkInputValue = function() {
+      var self = this;
+      var v = self.EleInput.val();
+      v = v.split(':');
+      if (v.length != 2) {
+        return false;
+      }
+      var h = parseInt(v[0] || 0);
+      var m = parseInt(v[1] || 0);
+
+      if ( (h !== 0 && !h) || (m !==0 && !m)){
+        return false;
+      }
+      h = h < 0 ? 0 : h;
+      h = h > self.opts.maxH ? self.opts.maxH : h;
+      m = m < 0 ? 0 : m;
+      m = m > self.opts.maxM ? self.opts.maxM : m;
+      h = self.formatValue(h);
+      m = self.formatValue(m);
+      self.EleInput.val(h + ':' + m);
+    };
+
+    fn.updateInputFromPoint = function() {
+      var self = this;
+      var h = self.formatValue(self.ElePointH.text());
+      var m = self.formatValue(self.ElePointM.text());
+      var value = h + ':' + m;
+      self.EleInput.val(value).trigger('input');
+    };
+
+    fn.formatValue = function (value) {
+      return value < 10 ? '0' + value : value;
+    };
     $.TimeSelector = TimeSelector;
   })($);
 </script>
 <script>
   var a = new $.TimeSelector({
-    field: document.getElementsByClassName('time-selector-field')[0],
-    container: document.getElementsByClassName('time-selector-container')[0]
+    div: $('.time-selector').eq(0),
+  });
+  var b = new $.TimeSelector({
+    div: $('.time-selector').eq(1),
   });
 </script>
 </html>
