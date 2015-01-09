@@ -161,8 +161,10 @@
 <body>
 
   <div class="time-selector test">
+    <input type="text" class="time-selector-field">
   </div>
   <div class="time-selector test">
+    <input type="text" class="time-selector-field">
   </div>
 </body>
 <script src="bower_components/jquery/dist/jquery.min.js"></script>
@@ -176,7 +178,6 @@
 
     fn.init = function(opts) {
       var defaultOpts = {
-
           html: '<div class="time-selector-container">' +
                   '<div class="progress-container">' +
                     '<div class="progress-name">小时</div>' +
@@ -204,7 +205,6 @@
                     '<a class="btn btn-primary pull-right progress-submit" href="javascript:void(0)">确定</a>' +
                   '</div>' +
                 '</div>',
-          htmlinput: '<input type="text" class="time-selector-field">',
           show: false,
           maxH: 23,
           maxM: 59,
@@ -217,8 +217,7 @@
       self.ElePointH = self.Ele.find('.hour');
       self.ElePointM = self.Ele.find('.minute');
       self.EleSubmit = self.Ele.find('.progress-submit');
-      self.EleInput  = $(self.opts.htmlinput);
-      self.opts.div.append(self.EleInput);
+      self.EleInput  = self.opts.div.find('.time-selector-field');
       self.opts.div.find('.time-selector-container').remove();
       self.opts.div.append(self.Ele);
       self.setPosition();
